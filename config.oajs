@@ -1,0 +1,11 @@
+const _healing = {
+    "threshold": 80,
+};
+
+const _attack = {
+    "follow": true,
+    "statusBar": {
+        "x": 650,
+        "y": 350,
+    }
+}

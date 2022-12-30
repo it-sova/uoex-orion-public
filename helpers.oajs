@@ -1,0 +1,7 @@
+function Overhead() {
+	Orion.Print("test");
+}
+
+function getHPPercent(percent) {
+	return Player.MaxHits() / 100 * percent
+}

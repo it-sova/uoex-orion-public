@@ -1,0 +1,32 @@
+function Stealth() {
+    var x = Player.X()
+    var y = Player.Y()
+    var hidingTimer = Orion.Now();
+    while (!Player.Dead()) {
+        while (!Player.Hidden()) {
+            var delta = Orion.Now() - hidingTimer;
+
+            if (delta > 0) {
+                Orion.Wait(11000 - delta);
+            } else {
+                Orion.Wait(11000);
+            }
+
+            Orion.UseSkill("Hiding")
+            Orion.Wait(1000);
+            hidingTimer = Orion.Now();
+
+            if (!Player.Hidden) {
+                Orion.Wait(10000);
+            }
+        }
+
+        while (Player.Hidden()) {
+            Orion.WalkTo(x + 10, y, Player.Z());
+            Orion.WalkTo(x, y, Player.Z());
+        }
+
+        Orion.WalkTo(x, y, Player.Z());
+        Orion.Wait(100);
+    }
+}

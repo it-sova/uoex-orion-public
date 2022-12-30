@@ -1,0 +1,40 @@
+function AttackTarget(targetSerial) {
+    var targetSerial = targetSerial === undefined ? Orion.TargetSystemSerial() : targetSerial;
+
+    if (Orion.FindObject(targetSerial)) {
+        Orion.ShowStatusbar(targetSerial, _attack["statusBar"]["x"], _attack["statusBar"]["y"], false);
+        Orion.Attack(targetSerial);
+        if (_attack["follow"]) {
+            Orion.Follow(targetSerial);
+        }
+    }
+}
+
+function AutoHealSelf() {
+    Orion.Print("[AutoHealSelf] Started")
+    Orion.Print("[AutoHealSelf] Healing at " + getHPPercent(_healing["threshold"]) + "HP")
+    while (true) {
+        while (!Player.Dead() && (Player.Hits() < (getHPPercent(_healing["threshold"])) || Player.Poisoned())) {
+            Orion.Say("[bandself");
+            Orion.Wait(100);
+            Orion.WaitJournal("You finish|not damaged|heal|barely help", Orion.Now(), Orion.Now() + 20000);
+
+            if (Orion.Count('0x0E21') < 10) {
+                Orion.Print('33', ' [' + Orion.Count('0x0E21') + '] bandage left ! ');
+            }
+        }
+        Orion.Wait(500);
+    }
+}
+
+function ToggleSpell(spellName) {
+    Orion.Print("[ToggleSpell] Started")
+    Orion.Print("[ToggleSpell] Spell: " + spellName)
+    while (true) {
+        if (!Player.Dead() && Player.Mana() > 5 && !Orion.SpellStatus(spellName)) {
+            Orion.Cast(spellName);
+            Orion.Wait(500);
+        }
+        Orion.Wait(100);
+    }
+}

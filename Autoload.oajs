@@ -1,0 +1,12 @@
+//#include config.oajs
+//#include helpers.oajs
+//#include combat.oajs
+
+
+// 0x43A92CA5 - 45
+// 0x43A99A8D - 50
+function Autoload() {
+	Orion.Exec("AutoHealSelf", true)
+	Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
+}
+
