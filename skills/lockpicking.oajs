@@ -1,0 +1,59 @@
+const _lockpicking = {
+    "pick": 0x14FC,
+    "box": 0x09AA,
+    "key": 0x100E,
+}
+
+function isLocked(serial) {
+    const box = Orion.FindObject(serial);
+    return Orion.Contains(box.Properties(), "Lock");
+}
+
+function ensureContainerOpened(serial, bank) {
+    var isBank = bank === undefined ? false : true;
+    var cnt = 0;
+    print("ensureContainerOpened", "IsBank? " + isBank, true);
+    while (cnt < 5) {
+        cnt++;
+        print("ensureContainerOpened", "Try #" + cnt, true);
+
+        if (isBank) {
+            Orion.Say("bank");
+        } else {
+            Orion.UseObject(serial);
+        }
+
+        Orion.Wait(1000);
+        if (Orion.GetSerial("lastcontainer") == serial) {
+            print("ensureContainerOpened", "Container " + serial + " opened", true);
+            return true;
+        }
+        print("ensureContainerOpened", "Failed to open container " + serial, true);
+    }
+
+    return false;
+}
+
+function train() {
+    while (!Player.Dead()) {
+        var lockpicks = Orion.FindType(_lockpicking["pick"]);
+        var boxes = Orion.FindType(_lockpicking["box"]);
+        if (lockpicks.length < 1 || boxes.length < 1) {
+            Orion.Print("No lockpicks or box found");
+            Orion.PauseScript();
+        }
+
+        if (!isLocked(boxes[0])) {
+            ensureContainerOpened(boxes[0]);
+            Orion.Wait(1000);
+            Orion.WaitTargetObject(boxes[0]);
+            Orion.UseType(_lockpicking["key"]);
+            Orion.Wait(1000);
+        }
+
+        Orion.WaitTargetType(_lockpicking["box"]);
+        Orion.UseType(_lockpicking["pick"]);
+        Orion.WaitJournal("This lock|The lock|the lock", Orion.Now(), Orion.Now() + 7000, "me|sys");
+        Orion.Wait(1000);
+    }
+}

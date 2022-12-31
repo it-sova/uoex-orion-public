@@ -1,0 +1,62 @@
+const _bs = {
+    "verbose": true,
+    "hammer": 0x13E4,
+    "ingot": 0x1BF2,
+    // Make Last
+    "button": 21,
+    "smeltButton": 14,
+    "type": 0x1413
+}
+
+
+function print(func, msg, debug) {
+    var debug = debug === undefined ? false : true;
+    if (_bs["verbose"] && debug) {
+        Orion.Print(0x0006, "[DEBUG] [" + func + "] " + msg, true)
+        return;
+    }
+
+    if (!debug) {
+        Orion.Print(0x0035, "[" + func + "] " + msg);
+    }
+}
+
+function craft(tool, button) {
+    print("craft", "Craft button " + button + " with tool " + tool, true);
+    Orion.CancelWaitGump();
+    Orion.UseType(tool);
+    Orion.WaitGump(Orion.CreateGumpHook(button));
+    if (Orion.WaitForGump(4000)) {
+        Orion.WaitGump(Orion.CreateGumpHook(0));
+        Orion.Wait(2000);
+    } else {
+        Orion.Print("Error crafting item, WaitForGump timeout exceeded, pausing the script.");
+        Orion.Wait(1000);
+    }
+}
+
+function train() {
+    while (!Player.Dead()) {
+        if (!Orion.FindType(_bs["hammer"]).length > 0 || !Orion.FindType(_bs["ingot"]).length > 0) {
+            print("train", "No hammers or ingots");
+            Orion.PauseScript();
+        }
+
+        print("train", "Crafting..")
+        craft(_bs["hammer"], _bs["button"]);
+
+        var items = Orion.FindType(_bs["type"]);
+        if (items.length > 0) {
+            items.forEach(function (item) {
+                print("train", "Smelting...")
+                if (Orion.HaveTarget())
+                    Orion.CancelTarget();
+                Orion.CancelWaitTarget();
+                Orion.WaitTargetObject(item);
+
+                craft(_bs["hammer"], _bs["smeltButton"]);
+                Orion.Wait(1000);
+            });
+        }
+    }
+}
