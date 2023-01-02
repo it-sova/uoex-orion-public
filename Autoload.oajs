@@ -7,6 +7,8 @@
 // 0x43A99A8D - 50
 function Autoload() {
 	Orion.Exec("AutoHealSelf", true)
-	Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
+//	Orion.Exec("ToggleSpell", true, ["Momentum Strike"])
+   Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
+	//Orion.Exec("ToggleAbility", true, ["Primary"])
 }
 

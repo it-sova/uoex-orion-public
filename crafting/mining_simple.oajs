@@ -222,7 +222,6 @@ function start() {
 
 function substInList(string, list) {
 	var result = false;
-	// print("substInList", "Check if '" + string + "' matches to " + list, true);
 	list.forEach(function (element) {
 		if (Orion.Contains(string, element)) {
 			print("substInList", "Matched " + element + " to " + string, true);

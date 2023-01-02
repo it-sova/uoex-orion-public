@@ -38,3 +38,15 @@ function ToggleSpell(spellName) {
         Orion.Wait(100);
     }
 }
+
+function ToggleAbility(abilityName) {
+    Orion.Print("[ToggleAbility] Started")
+    Orion.Print("[ToggleAbility] Ability: " + abilityName)
+    while (true) {
+        if (!Player.Dead() && Player.Mana() > 5 && !Orion.AbilityStatus(abilityName)) {
+            Orion.UseAbility(abilityName);
+            Orion.Wait(500);
+        }
+        Orion.Wait(100);
+    }
+}
