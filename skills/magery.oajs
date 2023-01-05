@@ -1,0 +1,19 @@
+const _spell = "Mana Vampire"
+
+function train() {
+while(!Player.Dead()){
+	if(Orion.HaveTarget())
+		Orion.CancelTarget();
+	
+	while(Player.Mana() < Player.MaxMana()) {
+		Orion.UseSkill("Meditation");
+		Orion.WaitJournal("stop|fail|at peace", Orion.Now(), Orion.Now() + 20000);
+	}
+	
+
+	Orion.Cast(_spell);
+	if(Orion.WaitForTarget(5000))
+		Orion.TargetObject(Player.Serial());
+	Orion.Wait(3500);
+	}
+}

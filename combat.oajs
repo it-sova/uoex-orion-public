@@ -1,3 +1,6 @@
+//#include config.oajs
+//#include helpers.oajs
+
 function AttackTarget(targetSerial) {
     var targetSerial = targetSerial === undefined ? Orion.TargetSystemSerial() : targetSerial;
 
@@ -11,16 +14,16 @@ function AttackTarget(targetSerial) {
 }
 
 function AutoHealSelf() {
-    Orion.Print("[AutoHealSelf] Started")
-    Orion.Print("[AutoHealSelf] Healing at " + getHPPercent(_healing["threshold"]) + "HP")
+    print("Started")
+    print("Healing at " + getPercentValue(Player.MaxHits(), _healing["threshold"]) + "HP")
     while (true) {
-        while (!Player.Dead() && (Player.Hits() < (getHPPercent(_healing["threshold"])) || Player.Poisoned())) {
+        while (!Player.Dead() && (Player.Hits() < (getPercentValue(Player.MaxHits(), _healing["threshold"])) || Player.Poisoned())) {
             Orion.Say("[bandself");
             Orion.Wait(100);
             Orion.WaitJournal("You finish|not damaged|heal|barely help", Orion.Now(), Orion.Now() + 20000);
 
             if (Orion.Count('0x0E21') < 10) {
-                Orion.Print('33', ' [' + Orion.Count('0x0E21') + '] bandage left ! ');
+                print('[' + Orion.Count('0x0E21') + '] bandages left ! ');
             }
         }
         Orion.Wait(500);
@@ -28,8 +31,8 @@ function AutoHealSelf() {
 }
 
 function ToggleSpell(spellName) {
-    Orion.Print("[ToggleSpell] Started")
-    Orion.Print("[ToggleSpell] Spell: " + spellName)
+    print("Started")
+    print("Spell: " + spellName)
     while (true) {
         if (!Player.Dead() && Player.Mana() > 5 && !Orion.SpellStatus(spellName)) {
             Orion.Cast(spellName);
@@ -40,8 +43,8 @@ function ToggleSpell(spellName) {
 }
 
 function ToggleAbility(abilityName) {
-    Orion.Print("[ToggleAbility] Started")
-    Orion.Print("[ToggleAbility] Ability: " + abilityName)
+    print("Started")
+    print("Ability: " + abilityName)
     while (true) {
         if (!Player.Dead() && Player.Mana() > 5 && !Orion.AbilityStatus(abilityName)) {
             Orion.UseAbility(abilityName);
@@ -49,4 +52,39 @@ function ToggleAbility(abilityName) {
         }
         Orion.Wait(100);
     }
+}
+
+function claimAllCorpses() {
+    var corpses = Orion.FindType('0x2006', '-1', "ground", 'gray', 10);
+    if (corpses && corpses.length > 0) {
+        if (Orion.HaveTarget())
+            Orion.CancelTarget();
+
+        Orion.WaitJournal("Choose a corpse", Orion.Now(), Orion.Now() + 1000);
+        corpses.forEach(function (corpse) {
+            if (!Orion.HaveTarget()) {
+                Orion.Say("[claim");
+                Orion.WaitForTarget(1000);
+            }
+            Orion.TargetObject(corpse);
+            Orion.WaitJournal("Target cannot|You clam|You did|That is|Choose another", Orion.Now(), Orion.Now() + 1000);
+            Orion.Wait(500);
+        });
+
+    }
+    if (Orion.HaveTarget())
+        Orion.CancelTarget();
+
+}
+
+function Hide() {
+    const alwaysRunOption = Orion.ClientOptionGet("AlwaysRun");
+    const blockRunOption = Orion.ClientOptionGet("BlockRunWhileHidden");
+
+    print("Initial alwaysRun -> " + alwaysRunOption + " blockRun -> " + blockRunOption, true);
+
+    // while (!Player.Hidden()) {
+    //     Orion.WarMode(false);
+
+    // }
 }

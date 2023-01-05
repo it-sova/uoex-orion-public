@@ -1,0 +1,53 @@
+const targetSerial = 0x00315D6B;
+
+function train() {
+    var target = Orion.FindObject(targetSerial);
+    if (!target) {
+        print("No target found");
+        Orion.PauseScript();
+    }
+
+    while (!Player.Dead()) {
+        while (!isTamed(target)) {
+            tame(target);
+            Orion.Wait(500);
+        }
+
+        release(target);
+        Orion.Wait(500);
+    }
+}
+
+function isTamed(target) {
+    return Orion.Contains(target.Properties(), "(tame)");
+}
+
+function tame(target) {
+    Orion.WarMode(false);
+    Orion.ClearJournal();
+
+    if (!Orion.WalkTo(target.X(), target.Y(), target.Z(), 1)) {
+        print("Failed to reach the target")
+        return;
+    }
+
+    Orion.WaitTargetObject(target.Serial());
+    Orion.UseSkill("Animal Taming");
+
+    while (true) {
+        if (Orion.InJournal('master|chance|fail|challenging|already|far|cannot'))
+            return;
+
+        Orion.WalkTo(target.X(), target.Y(), target.Z(), 1);
+        Orion.Wait(100);
+    }
+}
+
+function release(target) {
+    while (isTamed(target)) {
+        Orion.WaitGump(Orion.CreateGumpHook(2));
+        Orion.Wait(1000);
+        Orion.Say(target.Name() + " release");
+        Orion.Wait(1000);
+    }
+}

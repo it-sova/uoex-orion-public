@@ -1,3 +1,7 @@
+const _global = {
+    "verbose": true,
+}
+
 const _healing = {
     "threshold": 80,
 };
@@ -9,3 +13,75 @@ const _attack = {
         "y": 350,
     }
 }
+
+const _mining = {
+    //Max Weight to unload
+    "maxWeight": (Player.MaxWeight() - 20),
+    //Pickaxe type(pickaxe, shovel etc)
+    "forgeScanDistance": 120,
+    // Radius to dig (X+-2, Y+-2)
+    "tileOffset": 2,
+    "forges": {
+        "locations": [
+            { "x": 1129, "y": 1460, "z": -95 },
+            { "x": 1169, "y": 1401, "z": -95 },
+            { "x": 1186, "y": 1422, "z": -95 },
+        ]
+    },
+    "types": {
+        "tinkerTool": 0x1EB8,
+        "pickaxe": 0x0F39,
+        "ore": 0x19B9,
+        "ingot": 0x1BF2,
+        "forges": [0x0FB1, 0x19A2, 0x1996],
+    },
+    "craftTools": {
+        "enabled": true,
+        "minimumTools": 4,
+        "gumpButtons": {
+            "tinkerTool": 23,
+            "pickaxe": 72
+        }
+    },
+    "unload": {
+        "enabled": true,
+        "unloadWeightLimit": Player.MaxWeight() - 100,
+        "bankLocation": {
+            "x": 1066,
+            "y": 1458,
+            "z": -83
+        }
+    },
+    "skipTileMessages": [
+        "too far",
+        "seen",
+        "no metal",
+        "can't target"
+    ],
+    "minePoints": {
+        // Minoc
+        // 1: { "x": 2559, "y": 496, "z": 0 },
+        // 2: { "x": 2563, "y": 489, "z": 0 },
+        // 3: { "x": 2566, "y": 482, "z": 0 },
+        // 4: { "x": 2572, "y": 484, "z": 0 },
+        // 5: { "x": 2577, "y": 481, "z": 0 },
+        // 6: { "x": 2575, "y": 477, "z": 0 },
+        // 7: { "x": 2571, "y": 477, "z": 0 },
+        // Mega
+        1: { "x": 1127, "y": 1466, "z": -95 },
+        2: { "x": 1127, "y": 1455, "z": -95 },
+        3: { "x": 1132, "y": 1458, "z": -95 },
+        4: { "x": 1138, "y": 1447, "z": -95 },
+        5: { "x": 1146, "y": 1447, "z": -95 },
+        6: { "x": 1149, "y": 1432, "z": -95 },
+        7: { "x": 1157, "y": 1430, "z": -95 },
+        8: { "x": 1164, "y": 1422, "z": -95 },
+        9: { "x": 1167, "y": 1413, "z": -95 },
+        10: { "x": 1179, "y": 1419, "z": -95 },
+        11: { "x": 1188, "y": 1417, "z": -95 },
+        12: { "x": 1184, "y": 1408, "z": -95 },
+        13: { "x": 1179, "y": 1401, "z": -95 },
+        14: { "x": 1162, "y": 1404, "z": -95 },
+        15: { "x": 1159, "y": 1396, "z": -95 },
+    }
+};

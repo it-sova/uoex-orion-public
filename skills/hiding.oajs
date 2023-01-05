@@ -1,10 +1,19 @@
+//#include ../helpers.oajs
+
 function Stealth() {
+	Orion.ClientOptionSet("AlwaysRun", 0);
+	print("===========x");
+	print("Your 'Always Run' options has been set to 'disabled', don't forget to reenable it");
+	print("x===========");
+
     var x = Player.X()
     var y = Player.Y()
     var hidingTimer = Orion.Now();
     while (!Player.Dead()) {
         while (!Player.Hidden()) {
             var delta = Orion.Now() - hidingTimer;
+
+            print(">> I'm hidden");
 
             if (delta > 0) {
                 Orion.Wait(11000 - delta);
@@ -22,6 +31,7 @@ function Stealth() {
         }
 
         while (Player.Hidden()) {
+            print(">> Stealthing");
             Orion.WalkTo(x + 10, y, Player.Z());
             Orion.WalkTo(x, y, Player.Z());
         }

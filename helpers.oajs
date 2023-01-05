@@ -1,7 +1,99 @@
-function Overhead() {
-	Orion.Print("test");
+//#include config.oajs
+
+const _reagents = [
+	0x0F7B, // bm
+    0x0F7A, // bp
+    0x0F84, // ga
+    0x0F85, // gs
+    0x0F86, // mr
+    0x0F88, // ns
+    0x0F8C, // sa
+    0x0F8D, // ss
+    0x0F87, // en
+];
+
+function getPercentValue(value, percent) {
+	return value / 100 * percent
 }
 
-function getHPPercent(percent) {
-	return Player.MaxHits() / 100 * percent
+function toKeys(type, items) {
+	if(!Orion.FindType(type).length > 0) {
+		print("No keys found in backpack!")
+		return;
+	}
+
+	const itemsFound = Orion.FindType(items.join("|"));
+	if (!itemsFound.length > 0)
+	{
+		print("No items found in backpack!")
+		return;
+	}
+
+	Orion.CancelWaitGump();
+	Orion.UseType(type);
+	Orion.WaitGump(Orion.CreateGumpHook(60030));
+
+	itemsFound.forEach(function(item){
+		print(item, true);
+		Orion.CancelWaitTarget();
+		Orion.WaitTargetObject(item);
+		Orion.WaitJournal("That is not|You successfully", Orion.Now(), Orion.Now() + 2000, "me|sys");
+		Orion.Wait(5000);
+	});
+
+	Orion.CancelWaitGump();
+	Orion.WaitGump(Orion.CreateGumpHook(60030));
+	Orion.CancelTarget();
+
+
+}
+
+function print(msg, debug) {
+	var debug = debug === undefined ? false : true;
+	if (_global["verbose"] && debug) {
+		Orion.Print(0x0006, "[DEBUG] [" + arguments.callee.caller.name + "] " + msg, true)
+		return;
+	}
+
+	if (!debug) {
+		Orion.Print(0x0035, "[" + arguments.callee.caller.name + "] " + msg);
+	}
+}
+
+function craft(tool, button) {
+	print("craft", "Craft button " + button + " with tool " + tool, true);
+	Orion.UseType(tool);
+	Orion.WaitGump(Orion.CreateGumpHook(button));
+	if (Orion.WaitForGump(2000)) {
+		Orion.WaitGump(Orion.CreateGumpHook("cancel"));
+		Orion.Wait(2000);
+	} else {
+		print("Error crafting item, WaitForGump timeout exceeded, pausing the script.");
+		Orion.PauseScript();
+	}
+}
+
+function ensureContainerOpened(serial, bank) {
+	var isBank = bank === undefined ? false : true;
+	var cnt = 0;
+	print("IsBank? " + isBank, true);
+	while (cnt < 5) {
+		cnt++;
+		print("Try #" + cnt, true);
+
+		if (isBank) {
+			Orion.Say("bank");
+		} else {
+			Orion.UseObject(serial);
+		}
+
+		Orion.Wait(1000);
+		if (Orion.GetSerial("lastcontainer") == serial) {
+			print("Container " + serial + " opened", true);
+			return true;
+		}
+		print("Failed to open container " + serial, true);
+	}
+
+	return false;
 }

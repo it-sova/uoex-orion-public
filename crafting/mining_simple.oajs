@@ -1,89 +1,5 @@
-const _mining = {
-	"verbose": true,
-	//Max Weight to unload
-	"maxWeight": (Player.MaxWeight() - 20),
-	//Pickaxe type(pickaxe, shovel etc)
-	"forgeScanDistance": 120,
-	// Radius to dig (X+-2, Y+-2)
-	"tileOffset": 2,
-	"forges": {
-		"locations": [
-			{ "x": 1129, "y": 1460, "z": -95 },
-			{ "x": 1169, "y": 1401, "z": -95 },
-			{ "x": 1186, "y": 1422, "z": -95 },
-		]
-	},
-	"types": {
-		"tinkerTool": 0x1EB8,
-		"pickaxe": 0x0F39,
-		"ore": 0x19B9,
-		"ingot": 0x1BF2,
-		"forges": [0x0FB1, 0x19A2, 0x1996],
-	},
-	"craftTools": {
-		"enabled": true,
-		"minimumTools": 4,
-		"gumpButtons": {
-			"tinkerTool": 23,
-			"pickaxe": 72
-		}
-	},
-	"unload": {
-		"enabled": true,
-		"unloadWeightLimit": Player.MaxWeight() - 100,
-		"bankLocation": {
-			"x": 1066,
-			"y": 1458,
-			"z": -83
-		}
-	},
-	"skipTileMessages": [
-		"too far",
-		"seen",
-		"no metal",
-		"can't target"
-	]
-};
-
-var minePoints = {
-	// Minoc
-	// 1: { "x": 2559, "y": 496, "z": 0 },
-	// 2: { "x": 2563, "y": 489, "z": 0 },
-	// 3: { "x": 2566, "y": 482, "z": 0 },
-	// 4: { "x": 2572, "y": 484, "z": 0 },
-	// 5: { "x": 2577, "y": 481, "z": 0 },
-	// 6: { "x": 2575, "y": 477, "z": 0 },
-	// 7: { "x": 2571, "y": 477, "z": 0 },
-	// Mega
-	1: { "x": 1127, "y": 1466, "z": -95 },
-	2: { "x": 1127, "y": 1455, "z": -95 },
-	3: { "x": 1132, "y": 1458, "z": -95 },
-	4: { "x": 1138, "y": 1447, "z": -95 },
-	5: { "x": 1146, "y": 1447, "z": -95 },
-	6: { "x": 1149, "y": 1432, "z": -95 },
-	7: { "x": 1157, "y": 1430, "z": -95 },
-	8: { "x": 1164, "y": 1422, "z": -95 },
-	9: { "x": 1167, "y": 1413, "z": -95 },
-	10: { "x": 1179, "y": 1419, "z": -95 },
-	11: { "x": 1188, "y": 1417, "z": -95 },
-	12: { "x": 1184, "y": 1408, "z": -95 },
-	13: { "x": 1179, "y": 1401, "z": -95 },
-	14: { "x": 1162, "y": 1404, "z": -95 },
-	15: { "x": 1159, "y": 1396, "z": -95 },
-};
-
-function craft(tool, button) {
-	print("craft", "Craft button " + button + " with tool " + tool, true);
-	Orion.UseType(tool);
-	Orion.WaitGump(Orion.CreateGumpHook(button));
-	if (Orion.WaitForGump(2000)) {
-		Orion.WaitGump(Orion.CreateGumpHook("cancel"));
-		Orion.Wait(2000);
-	} else {
-		Orion.Print("Error crafting item, WaitForGump timeout exceeded, pausing the script.");
-		Orion.PauseScript();
-	}
-}
+//#include ../helpers.oajs
+//#include ../config.oajs
 
 function craftTools() {
 	["tinkerTool", "pickaxe"].forEach(function (tool) {
@@ -98,10 +14,9 @@ function ifFeatureFlagEnabled(flag, func) {
 	if (_mining[flag]["enabled"]) {
 		func();
 	} else {
-		Orion.Print("FeatureFlag for the function " + flag + " is disabled, skipping exection")
+		print("FeatureFlag for the function " + flag + " is disabled, skipping exection")
 	}
 }
-
 
 function checkCaptcha() {
 	var gumpCount = Orion.GumpCount();
@@ -116,15 +31,14 @@ function checkCaptcha() {
 }
 
 function nearestForge() {
-	print("nearestForge", "Looking for the nearest forge... ", true);
+	print("Looking for the nearest forge... ", true);
 	var forges = {};
 	_mining["forges"]["locations"].forEach(function (location) {
 		var distance = Orion.GetDistance(location["x"], location["y"]);
 
 		forges[distance] = location;
 
-		print("nearestForge",
-			"Range: " + distance + " Location: " +
+		print("Range: " + distance + " Location: " +
 			" X: " + location["x"] +
 			" Y: " + location["y"] +
 			" Z: " + location["z"], true);
@@ -132,10 +46,9 @@ function nearestForge() {
 
 	const ranges = Object.keys(forges);
 	const min = Math.min.apply(Math, ranges);
-	print("nearestForge", "Ranges: " + Object.keys(forges), true);
-	print("nearestForge", "Minimum : " + min, true);
-	print("nearestForge",
-		"Location: " +
+	print("Ranges: " + Object.keys(forges), true);
+	print("Minimum : " + min, true);
+	print("Location: " +
 		" X: " + forges[min]["x"] +
 		" Y: " + forges[min]["y"] +
 		" Z: " + forges[min]["z"], true);
@@ -143,47 +56,8 @@ function nearestForge() {
 	return forges[min];
 }
 
-function print(func, msg, debug) {
-	var debug = debug === undefined ? false : true;
-	if (_mining["verbose"] && debug) {
-		Orion.Print(0x0006, "[DEBUG] [" + func + "] " + msg, true)
-		return;
-	}
-
-	if (!debug) {
-		Orion.Print(0x0035, "[" + func + "] " + msg);
-	}
-
-
-}
-
-function ensureContainerOpened(serial, bank) {
-	var isBank = bank === undefined ? false : true;
-	var cnt = 0;
-	print("ensureContainerOpened", "IsBank? " + isBank, true);
-	while (cnt < 5) {
-		cnt++;
-		print("ensureContainerOpened", "Try #" + cnt, true);
-
-		if (isBank) {
-			Orion.Say("bank");
-		} else {
-			Orion.UseObject(serial);
-		}
-
-		Orion.Wait(1000);
-		if (Orion.GetSerial("lastcontainer") == serial) {
-			print("ensureContainerOpened", "Container " + serial + " opened", true);
-			return true;
-		}
-		print("ensureContainerOpened", "Failed to open container " + serial, true);
-	}
-
-	return false;
-}
-
 function unload() {
-	print("unload", "Unloading...", true)
+	print("Unloading...", true)
 	if (!ensureContainerOpened(Orion.ObjAtLayer("Backpack", Player.Serial()).Serial())) {
 		return false;
 	}
@@ -198,15 +72,15 @@ function unload() {
 		Orion.Wait(2000);
 	});
 
-	print("unload", "Unloaded", true)
+	print("Unloaded", true)
 }
 
 function start() {
 	init();
 	while (!Player.Dead()) {
-		for (var i in minePoints) {
-			print("start", "[i] Point " + i);
-			Orion.WalkTo(minePoints[i]["x"], minePoints[i]["y"], minePoints[i]["z"], 0);
+		for (var i in _mining["minePoints"]) {
+			print("[i] Point " + i);
+			Orion.WalkTo(_mining["minePoints"][i]["x"], _mining["minePoints"][i]["y"], _mining["minePoints"][i]["z"], 0);
 
 			for (var x = -_mining["tileOffset"]; x <= _mining["tileOffset"]; x++) {
 				for (var y = -_mining["tileOffset"]; y <= _mining["tileOffset"]; y++) {
@@ -224,7 +98,7 @@ function substInList(string, list) {
 	var result = false;
 	list.forEach(function (element) {
 		if (Orion.Contains(string, element)) {
-			print("substInList", "Matched " + element + " to " + string, true);
+			print("Matched " + element + " to " + string, true);
 			result = true;
 		}
 	});
@@ -232,36 +106,32 @@ function substInList(string, list) {
 	return result;
 }
 
-function testSUbst() {
-	Orion.Print(substInList("There is no metal here to mine.", _mining["skipTileMessages"]));
-}
-
 function mine(graphic, x, y, z) {
 	while (!Player.Dead()) {
 		checkCaptcha();
 		if (!checkTool()) {
-			print("mine", "Not enough tools, pausing the script.");
+			print("Not enough tools, pausing the script.");
 			Orion.PauseScript();
 		}
 
 		if (Player.Weight() >= _mining["maxWeight"]) {
-			print("mine -> weight", "W: " + Player.Weight() + " Smelt: " + _mining["maxWeight"] + " Unload: " + _mining["unload"]["unloadWeightLimit"], true);
+			print("W: " + Player.Weight() + " Smelt: " + _mining["maxWeight"] + " Unload: " + _mining["unload"]["unloadWeightLimit"], true);
 			const forgeLocation = nearestForge();
 			Orion.WalkTo(forgeLocation["x"], forgeLocation["y"], forgeLocation["z"], 1);
 			smelt(Player.X(), Player.Y(), Player.Z());
 			ifFeatureFlagEnabled("craftTools", craftTools);
-			ifFeatureFlagEnabled("unload", function () {
+			ifFeatureFlagEnabled(function () {
 				if (Player.Weight() >= _mining["unload"]["unloadWeightLimit"]) {
 					if (!Orion.WalkTo(
 						_mining["unload"]["bankLocation"]["x"],
 						_mining["unload"]["bankLocation"]["y"],
 						_mining["unload"]["bankLocation"]["z"])) {
-						print("mine -> unload", "Failed to reach the bank, pausing the script")
+						print("Failed to reach the bank, pausing the script")
 						Orion.PauseScript();
 					}
 					unload()
 					if (!Orion.WalkTo(x, y, z)) {
-						pprint("mine -> unload", "Failed to reach the spot, pausing the script")
+						print("Failed to reach the spot, pausing the script")
 						Orion.PauseScript();
 					}
 				}
@@ -278,18 +148,18 @@ function mine(graphic, x, y, z) {
 			var result = Orion.WaitJournal("You put some|You loosen some|There is no metal|Try mining|is too far|no line of|seen", Orion.Now(), (Orion.Now() + 7000), "me|sys");
 			// TODO: Refactor this
 			if (result && substInList(result.Text(), _mining["skipTileMessages"])) {
-				print("mine", "[i] Tile depleted", true);
+				print("[i] Tile depleted", true);
 				Orion.Wait(300);
 				break;
 			}
 		} else {
-			print("mine", "Tile is not valid", true);
+			print("Tile is not valid", true);
 			break;
 		}
 	}
 }
 function smelt(x, y, z) {
-	print("smelt", "[i] Smelting");
+	print("[i] Smelting");
 	var forgeSerial = Orion.FindType(_mining["types"]["forges"].join("|"), -1, "ground", "", _mining["forgeScanDistance"]);
 	if (forgeSerial.length > 0) {
 		var forge = Orion.FindObject(forgeSerial[0]);
@@ -310,7 +180,7 @@ function smelt(x, y, z) {
 			}
 		}
 	} else {
-		print("smelt", "Failed to find a forge, pausing the script.");
+		print("Failed to find a forge, pausing the script.");
 		Orion.PauseScript();
 	}
 }
@@ -330,7 +200,7 @@ function init() {
 	if (Player.WarMode())
 		Player.WarMode(false)
 
-	print("init", "Initialization...");
-	print("init", "[Unloading] Enabled: " + _mining["unload"]["enabled"])
-	print("init", "[CraftTools] Enabled: " + _mining["craftTools"]["enabled"])
+	print("Initialization...");
+	print("[Unloading] Enabled: " + _mining["unload"]["enabled"])
+	print("[CraftTools] Enabled: " + _mining["craftTools"]["enabled"])
 }

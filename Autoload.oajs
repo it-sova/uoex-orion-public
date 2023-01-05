@@ -5,10 +5,14 @@
 
 // 0x43A92CA5 - 45
 // 0x43A99A8D - 50
-function Autoload() {
+function Autostart() {
 	Orion.Exec("AutoHealSelf", true)
 //	Orion.Exec("ToggleSpell", true, ["Momentum Strike"])
-   Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
-	//Orion.Exec("ToggleAbility", true, ["Primary"])
+Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
+//Orion.Exec("ToggleAbility", true, ["Secondary"])
+//Orion.Exec("ToggleAbility", true, ["Primary"])
 }
 
+function test() {
+	toKeys(0x176B, _reagents);
+}
