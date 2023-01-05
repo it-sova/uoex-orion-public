@@ -1,4 +1,4 @@
-const targetSerial = 0x00315D6B;
+const targetSerial = 0x00887C10;
 
 function train() {
     var target = Orion.FindObject(targetSerial);

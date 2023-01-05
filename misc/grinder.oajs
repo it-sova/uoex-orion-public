@@ -1,0 +1,164 @@
+//#include helpers.oajs
+//#include combat.oajs
+
+
+// Okay, so.
+// 1. Orions SUCKS HARD withe a Z coordinate
+// 2. I suck hard with the gumps
+
+const _grinder = {
+    "enemyType": 0x00D7,
+    "start": {
+        "location": [6062, 314, 51],
+        "route": [
+            [6053, 323, 22],
+            [6065, 324, 22],
+            [6062, 314, 51],
+        ],
+    },
+    "npc": {
+        "id": 0x00000035,
+        "contextMenu": 1,
+        "x": 6044,
+        "y": 322,
+        "z": 22,
+    },
+    "gumps": {
+        "initial": {
+            "id": 0x08DB94B0,
+            "answer": 60000,
+        },
+        "secondary": {
+            "id": 0x23C255E7,
+            "answer": 60010,
+            "closeAnswer" : 60004,
+        },
+    }
+};
+
+var _firstStart = true;
+
+function handleGump(gumpID, button) {
+    const gumpCount = Orion.GumpCount();
+    print("Total gumps: " + gumpCount, true);
+    for (var gumpIndex = 0; gumpIndex <= gumpCount; gumpIndex++) {
+        print("Gump #" + gumpIndex + "/" + gumpCount, true);
+        var gump = Orion.GetGump(gumpIndex);
+        if (gump && gump.ID() == gumpID) {
+            print("Found the gump", true)
+            gump.Select(Orion.CreateGumpHook(button));
+            return true;
+        }
+        Orion.Wait(1000);
+    }
+
+    return false;
+}
+
+function handleQuest() {
+    // The logic is fucked up, I do know
+    // But it's a temporary stuff any non-AFK only, so I don't care
+
+    Orion.RequestContextMenu(_grinder["npc"]["id"]);
+    Orion.WaitContextMenuID(_grinder["npc"]["id"], _grinder["npc"]["contextMenu"]);
+    if (!Orion.WaitForGump(2000)) {
+        print("Failed to get the a gump from the context menu");
+        Orion.PauseScript();
+
+    }
+
+    print("Got primary gump", true);
+
+    if (!handleGump(
+        _grinder["gumps"]["initial"]["id"],
+        _grinder["gumps"]["initial"]["answer"])
+    ) {
+        print("Failed to handle the initial gump, we will die. As always.");
+        Orion.PauseScript();
+    }
+
+    print("Got secondary gump", true);
+
+    var trySecond = 0;
+    while (true){
+        handleGump(
+            _grinder["gumps"]["secondary"]["id"],
+            _grinder["gumps"]["secondary"]["answer"]);
+
+        print("Going to handle the secondary gump with button #" + _grinder["gumps"]["secondary"]["answer"]);
+        trySecond++;
+        print("Secondary answer #" + trySecond)
+        if (trySecond >= 2) {
+            handleGump(
+                _grinder["gumps"]["secondary"]["id"],
+                _grinder["gumps"]["secondary"]["closeAnswer"]);
+            break;
+        }
+    }
+
+}
+
+function start() {
+    disclaimer();
+    while (!Player.Dead()) {
+        print("Starting...");
+        if (!Orion.WalkTo(_grinder["npc"]["x"], _grinder["npc"]["y"], _grinder["npc"]["z"], 2, 50)) {
+            Orion.Print("Failed to reach the NPC");
+            Orion.PauseScript();
+        }
+
+
+        if (!_firstStart) {
+            print("Not the first start, return the quest");
+            handleQuest();
+        }
+        handleQuest();
+        Orion.Wait(10000);
+
+
+        _firstStart = false;
+
+        _grinder["start"]["route"].forEach(function (point) {
+            print("OMW to " + point)
+            if (!Orion.WalkTo(point[0], point[1], point[2])) {
+                print("Failed to reach route point " + point);
+                Orion.PauseScript();
+            }
+        });
+
+        if (!Orion.WalkTo(_grinder["start"]["location"][0], _grinder["start"]["location"][1], _grinder["start"]["location"][2], 50)) {
+            Orion.Print("Failed to reach the spot");
+            Orion.PauseScript();
+        }
+
+
+        kill();
+    }
+}
+
+function kill() {
+    var killed = 0;
+    while (!Player.Dead() && killed < 14) {
+        if (!Orion.WalkTo(_grinder["start"]["x"], _grinder["start"]["y"], _grinder["start"]["z"])) {
+            Orion.Print("Failed to reach the spot");
+        }
+        var enemies = Orion.FindType(_grinder["enemyType"], 0xFFFF, "ground", "mobile", 13);
+        print("Enemies found: " + enemies.length, true)
+        enemies.forEach(function (enemy) {
+            while (Orion.FindObject(enemy)) {
+                var enemyObj = Orion.FindObject(enemy);
+                Orion.WalkTo(enemyObj.X(), enemyObj.Y(), enemyObj.Z(), 1, 1);
+                Orion.Attack(enemy);
+                Orion.Follow(enemy);
+                Orion.Wait(500);
+            }
+            killed++;
+            print("Killed: " + killed);
+        })
+
+        Orion.Wait(500);
+
+        if (Orion.Count(0x2006, 0xFFFF, "ground") > 5)
+            claimAllCorpses();
+    }
+}

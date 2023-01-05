@@ -2,14 +2,14 @@
 
 const _reagents = [
 	0x0F7B, // bm
-    0x0F7A, // bp
-    0x0F84, // ga
-    0x0F85, // gs
-    0x0F86, // mr
-    0x0F88, // ns
-    0x0F8C, // sa
-    0x0F8D, // ss
-    0x0F87, // en
+	0x0F7A, // bp
+	0x0F84, // ga
+	0x0F85, // gs
+	0x0F86, // mr
+	0x0F88, // ns
+	0x0F8C, // sa
+	0x0F8D, // ss
+	0x0F87, // en
 ];
 
 function getPercentValue(value, percent) {
@@ -17,14 +17,13 @@ function getPercentValue(value, percent) {
 }
 
 function toKeys(type, items) {
-	if(!Orion.FindType(type).length > 0) {
+	if (!Orion.FindType(type).length > 0) {
 		print("No keys found in backpack!")
 		return;
 	}
 
 	const itemsFound = Orion.FindType(items.join("|"));
-	if (!itemsFound.length > 0)
-	{
+	if (!itemsFound.length > 0) {
 		print("No items found in backpack!")
 		return;
 	}
@@ -33,7 +32,7 @@ function toKeys(type, items) {
 	Orion.UseType(type);
 	Orion.WaitGump(Orion.CreateGumpHook(60030));
 
-	itemsFound.forEach(function(item){
+	itemsFound.forEach(function (item) {
 		print(item, true);
 		Orion.CancelWaitTarget();
 		Orion.WaitTargetObject(item);
@@ -58,6 +57,10 @@ function print(msg, debug) {
 	if (!debug) {
 		Orion.Print(0x0035, "[" + arguments.callee.caller.name + "] " + msg);
 	}
+}
+
+function charPrint(msg) {
+	Orion.CharPrint(Player.Serial(), 0x0035, msg);
 }
 
 function craft(tool, button) {
@@ -96,4 +99,11 @@ function ensureContainerOpened(serial, bank) {
 	}
 
 	return false;
+}
+
+function disclaimer() {
+	print("!!!!!!!!!!!!!!!!!!!x")
+	print("!!!!!!!! YOU MUST NOT BE AFK WHILE RUNNING THIS SCRIPT")
+	print("!!!!!!!! IT'S AGAINST THE RULES!")
+	print("x!!!!!!!!!!!!!!!!!!!")
 }

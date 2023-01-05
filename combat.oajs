@@ -22,8 +22,8 @@ function AutoHealSelf() {
             Orion.Wait(100);
             Orion.WaitJournal("You finish|not damaged|heal|barely help", Orion.Now(), Orion.Now() + 20000);
 
-            if (Orion.Count('0x0E21') < 10) {
-                print('[' + Orion.Count('0x0E21') + '] bandages left ! ');
+            if (Orion.Count('0x0E21') < 80) {
+                charPrint('[' + Orion.Count('0x0E21') + '] bandages left ! ');
             }
         }
         Orion.Wait(500);
@@ -62,6 +62,11 @@ function claimAllCorpses() {
 
         Orion.WaitJournal("Choose a corpse", Orion.Now(), Orion.Now() + 1000);
         corpses.forEach(function (corpse) {
+            if (!Orion.InLOS(corpse)){
+                print("Corpse not in LOS, skipping for now", true);
+                return;
+            }
+
             if (!Orion.HaveTarget()) {
                 Orion.Say("[claim");
                 Orion.WaitForTarget(1000);
@@ -83,8 +88,40 @@ function Hide() {
 
     print("Initial alwaysRun -> " + alwaysRunOption + " blockRun -> " + blockRunOption, true);
 
-    // while (!Player.Hidden()) {
-    //     Orion.WarMode(false);
+    Orion.ClientOptionSet("AlwaysRun", 0);
+    Orion.ClientOptionSet("BlockRunWhileHidden", 1);
 
-    // }
+    Orion.PauseScript('all', 'Hide');
+
+    print("Client options has been set, all scripts are paused");
+
+    while (!Player.Hidden()) {
+        Orion.WarMode(true);
+        Orion.Wait(100);
+        Orion.WarMode(false);
+        Orion.UseSkill("Hiding")
+        Orion.Wait(1000);
+    }
+
+    while (Player.Hidden())
+        Orion.Wait(500);
+
+    Orion.ResumeScript('all');
+    Orion.ClientOptionSet("AlwaysRun", alwaysRunOption);
+    Orion.ClientOptionSet("BlockRunWhileHidden", blockRunOption);
+
+    print("Client options has been restored, all paused scripts are now running")
+}
+
+function SwapAttacks() {
+    if (Orion.ScriptRunning("ToggleAbility")) {
+        Orion.ToggleScript("ToggleAbility")
+        Orion.Exec("ToggleSpell", true, ["Lightning Strike"])
+        charPrint(" >> Now casting Lightning Strike")
+        return;
+    }
+
+    Orion.ToggleScript("ToggleSpell")
+    Orion.Exec("ToggleAbility", true, ["Primary"])
+    charPrint(" >> Now casting Secondary weapon ability")
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data version="2">
+    <hotkey type="4" action="0" key="123" modifiers="0" override_pass_key_to_client="0"/>
+    <hotkey type="3" action="1" key="71" modifiers="0" override_pass_key_to_client="0" meta="{&#10;    &quot;external_code&quot;: &quot;Orion.UseType(0x14FC);&quot;,&#10;    &quot;name&quot;: &quot;&quot;,&#10;    &quot;run_once&quot;: 0,&#10;    &quot;script_file_path&quot;: &quot;&quot;,&#10;    &quot;use_script_file&quot;: 0&#10;}&#10;"/>
+    <hotkey type="18" action="35" key="116" modifiers="0" override_pass_key_to_client="0"/>
+    <hotkey type="2" action="1" key="87" modifiers="0" override_pass_key_to_client="0" meta="{&#10;    &quot;external_code&quot;: &quot;&quot;,&#10;    &quot;name&quot;: &quot;claimAllCorpses&quot;,&#10;    &quot;run_once&quot;: 0,&#10;    &quot;script_file_path&quot;: &quot;&quot;,&#10;    &quot;use_script_file&quot;: 0&#10;}&#10;"/>
+    <hotkey type="2" action="1" key="81" modifiers="0" override_pass_key_to_client="0" meta="{&#10;    &quot;external_code&quot;: &quot;&quot;,&#10;    &quot;name&quot;: &quot;SwapAttacks&quot;,&#10;    &quot;run_once&quot;: 0,&#10;    &quot;script_file_path&quot;: &quot;&quot;,&#10;    &quot;use_script_file&quot;: 0&#10;}&#10;"/>
+    <hotkey type="7" action="0" key="219" modifiers="0" override_pass_key_to_client="0"/>
+    <hotkey type="3" action="1" key="49" modifiers="0" override_pass_key_to_client="0" meta="{&#10;    &quot;external_code&quot;: &quot;AttackTarget();&quot;,&#10;    &quot;name&quot;: &quot;AutoHealSelf&quot;,&#10;    &quot;run_once&quot;: 0,&#10;    &quot;script_file_path&quot;: &quot;&quot;,&#10;    &quot;use_script_file&quot;: 0&#10;}&#10;"/>
+    <hotkey type="25" action="7" key="192" modifiers="0" override_pass_key_to_client="0"/>
+    <hotkey type="2" action="1" key="72" modifiers="0" override_pass_key_to_client="0" meta="{&#10;    &quot;external_code&quot;: &quot;&quot;,&#10;    &quot;name&quot;: &quot;Hide&quot;,&#10;    &quot;run_once&quot;: 0,&#10;    &quot;script_file_path&quot;: &quot;&quot;,&#10;    &quot;use_script_file&quot;: 0&#10;}&#10;"/>
+</data>
