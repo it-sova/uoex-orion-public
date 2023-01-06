@@ -105,5 +105,8 @@ function disclaimer() {
 	print("!!!!!!!!!!!!!!!!!!!x")
 	print("!!!!!!!! YOU MUST NOT BE AFK WHILE RUNNING THIS SCRIPT")
 	print("!!!!!!!! IT'S AGAINST THE RULES!")
+	print("!!!!!!!! BUT GMs DOESNT GIVE A FUCK ABOUT IT, HAVE FUN")
+	print("!!!!!!!! 30S AFK == JAIL")
+	print("!!!!!!!! And you will be humiliated to gather some random shit like in Balkans or russia.")
 	print("x!!!!!!!!!!!!!!!!!!!")
 }
