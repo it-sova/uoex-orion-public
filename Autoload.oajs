@@ -3,7 +3,6 @@
 
 
 function Autostart() {
-    disclaimer();
     Orion.ClientOptionSet("AlwaysRun", 1);
     Orion.ClientOptionSet("BlockRunWhileHidden", 1);
 	Orion.Exec("AutoHealSelf", true)
